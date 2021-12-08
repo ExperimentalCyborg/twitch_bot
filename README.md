@@ -1,2 +1,2 @@
-# twitch_bot
-Super simple twitch bot
+# Twitch Bot
+Super simple twitch bot.
