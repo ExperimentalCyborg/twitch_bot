@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from twitchio.ext import commands
 import data
 import argparse
