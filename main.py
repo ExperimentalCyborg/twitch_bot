@@ -33,7 +33,7 @@ class Bot(commands.Bot):
             return
 
         cmd = message.content.split(' ')[0][len(prefix):]
-        args = message.content.strip().split(' ')[1:]
+        arglist = message.content.strip().split(' ')[1:]
         privileged = message.author.is_mod or channel.name == message.author.name
 
         # keep up to date with changes to the tree below!
@@ -64,22 +64,24 @@ class Bot(commands.Bot):
                 await message.author.send("Note that while chat restrictions are enabled,"
                                           " I cannot talk in your chat unless you make me a moderator.")
         elif cmd == 'botprefix':
-            if args[0]:
-                self.data.channel_setting(channel.name, 'prefix', args[0])
-                await channel.send(f'Prefix is now set to "{args[0]}"')
+            if arglist and arglist[0]:
+                self.data.channel_setting(channel.name, 'prefix', arglist[0])
+                await channel.send(f'Prefix is now set to "{arglist[0]}"')
         elif cmd == 'addcmd':
-            exists = args[0] in self.data.command_list(channel.name)
-            self.data.command_add(channel.name, args[0], {
-                'type': 'echo',
-                'text': ' '.join(args[1:])
-            })
-            await channel.send(f'Command {"modified" if exists else "added"}: {prefix}{args[0]}')
+            if arglist and arglist[0]:
+                exists = arglist[0] in self.data.command_list(channel.name)
+                self.data.command_add(channel.name, arglist[0], {
+                    'type': 'echo',
+                    'text': ' '.join(arglist[1:])
+                })
+                await channel.send(f'Command {"modified" if exists else "added"}: {prefix}{arglist[0]}')
         elif cmd == 'removecmd':
-            if args[0] in self.data.command_list(channel.name):
-                self.data.command_remove(channel.name, args[0])
-                await channel.send(f'Command removed: {prefix}{args[0]}')
-            else:
-                await channel.send(f'Command not found: {prefix}{args[0]}')
+            if arglist and arglist[0]:
+                if arglist[0] in self.data.command_list(channel.name):
+                    self.data.command_remove(channel.name, arglist[0])
+                    await channel.send(f'Command removed: {prefix}{arglist[0]}')
+                else:
+                    await channel.send(f'Command not found: {prefix}{arglist[0]}')
         elif cmd == 'botleave':
             if message.author.channel == channel:
                 # await channel.send('Thank you for letting me be part of your channel, it was a pleasure! Goodbye.')
