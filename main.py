@@ -1,11 +1,12 @@
 from twitchio.ext import commands
 import data
+import argparse
 
 
 class Bot(commands.Bot):
 
-    def __init__(self):
-        super().__init__(token='YOUR_TOKEN_HERE', prefix='!')  # This prefix is unused
+    def __init__(self, token):
+        super().__init__(token=token, prefix='<unused>')
 
         # Default channel settings
         self.data = data.Data({
@@ -90,5 +91,8 @@ class Bot(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Bot()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("token", help="Oauth token for Twitch authentication")
+    args = parser.parse_args()
+    bot = Bot(args['token'])
     bot.run()
