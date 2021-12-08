@@ -63,8 +63,9 @@ class Bot(commands.Bot):
                                       " I cannot talk in your chat unless you make me a moderator."
                                       " I won't (and can't) change anything or ban anyone though!")
         elif cmd == 'botprefix':
-            self.data.channel_setting(channel.name, 'prefix', args[0])
-            await channel.send(f'Prefix is now set to "{args[0]}"')
+            if args[0]:
+                self.data.channel_setting(channel.name, 'prefix', args[0])
+                await channel.send(f'Prefix is now set to "{args[0]}"')
         elif cmd == 'addcmd':
             exists = args[0] in self.data.command_list(channel.name)
             self.data.command_add(channel.name, args[0], {
