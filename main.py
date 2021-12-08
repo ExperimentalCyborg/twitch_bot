@@ -50,18 +50,19 @@ class Bot(commands.Bot):
             cmdlist = [f'{prefix}{cmd}' for cmd in cmdlist]
             await channel.send(f'Available commands: {", ".join(cmdlist)}')
         elif cmd == 'botjoin':
-            await channel.send('Thank you for adding me to your channel!'
-                               f' My prefix will be "{self.data.default_channel_data["settings"]["prefix"]}".')
-            self.data.channel_add(message.author.name)
-            await self.join_channels([message.author.name])
+            if message.author.channel == channel:
+                await channel.send("I'm already here! ^_^")
+            else:
+                await channel.send('Thank you for adding me to your channel!'
+                                   f' My prefix will be "{self.data.default_channel_data["settings"]["prefix"]}".')
+                self.data.channel_add(message.author.name)
+                await self.join_channels([message.author.name])
 
-            # This whole damn message doesn't send because the author.send function doesn't work. >:(
-            await message.author.send("Hello! Thanks again for adding me."
-                                      " Send !bothelp in your channel's chat for more info."
-                                      " Small reminder:"
-                                      " while chat restrictions are enabled,"
-                                      " I cannot talk in your chat unless you make me a moderator."
-                                      " I won't (and can't) change anything or ban anyone though!")
+                # This whole damn message doesn't send because the author.send function doesn't work. >:(
+                await message.author.send("Hello! Thanks again for adding me."
+                                          " Say !bothelp in your channel's chat for more info.")
+                await message.author.send("Note that while chat restrictions are enabled,"
+                                          " I cannot talk in your chat unless you make me a moderator.")
         elif cmd == 'botprefix':
             if args[0]:
                 self.data.channel_setting(channel.name, 'prefix', args[0])
@@ -80,12 +81,11 @@ class Bot(commands.Bot):
             else:
                 await channel.send(f'Command not found: {prefix}{args[0]}')
         elif cmd == 'botleave':
-            if not message.author.channel == channel:
-                return
-            # await channel.send('Thank you for letting me be part of your channel, it was a pleasure! Goodbye.')
-            await channel.send(
-                "I can't leave channels yet due to this bug: https://github.com/TwitchIO/TwitchIO/issues/206")
-            await channel.send("You can change my prefix to something unobtrusive instead.")
+            if message.author.channel == channel:
+                # await channel.send('Thank you for letting me be part of your channel, it was a pleasure! Goodbye.')
+                await channel.send(
+                    "I can't leave channels yet due to this bug: https://github.com/TwitchIO/TwitchIO/issues/206")
+                await channel.send("You can change my prefix to something unobtrusive instead.")
         else:
             if cmd in self.data.command_list(channel.name):
                 command = self.data.command_get(channel.name, cmd)
