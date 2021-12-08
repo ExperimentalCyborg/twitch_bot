@@ -94,5 +94,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("token", help="Oauth token for Twitch authentication")
     args = parser.parse_args()
-    bot = Bot(args['token'])
+    bot = Bot(args.token)
     bot.run()
